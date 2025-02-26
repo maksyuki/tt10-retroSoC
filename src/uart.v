@@ -564,7 +564,7 @@ endmodule
 // See the Mulan PSL v2 for more details.
 
 module apb4_uart #(
-    parameter FIFO_DEPTH     = 32,
+    parameter FIFO_DEPTH     = 8,
     parameter LOG_FIFO_DEPTH = $clog2(FIFO_DEPTH)
 ) (
     input             pclk,
