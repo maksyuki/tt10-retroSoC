@@ -9,12 +9,12 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+retroSoC: A Customized ASIC for Retro Stuff!
 
 ## How to test
 
-Explain how to use your project
+retroSoC: A Customized ASIC for Retro Stuff!
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+retroSoC: A Customized ASIC for Retro Stuff!
