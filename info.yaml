@@ -22,7 +22,7 @@ project:
     - "simpleuart.v"
     - "counter_timer.v"
     - "spi_slave.v"
-    - "register."
+    - "register.v"
     - "lfsr.v"
     - "fifo.v"
     - "cdc_sync.v"
