@@ -37,6 +37,7 @@ project:
     - "i2c.v"
     - "psram_core.v"
     - "psram.v"
+    - "spi_defines.v"
     - "spi_clgen.v"
     - "spi_shift.v"
     - "spi_top.v"
