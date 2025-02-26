@@ -16,7 +16,7 @@ src_files = [
     'rtl/ip/spi_slave.v',
     'rtl/ip/ravenna_spi.v',
     'rtl/ip/rcu.v',
-    'rtl/ip/cust/register.v'
+    'rtl/ip/cust/register.v',
     'rtl/ip/cust/lfsr.v',
     'rtl/ip/cust/fifo.v',
     'rtl/ip/cust/cdc_sync.v',
@@ -54,5 +54,5 @@ src_files = [
 ]
 
 for v in src_files:
-    print(f'{retrosoc_repo_path}/{v}')
+    print(f'{retrosoc_repo_path}/{v} .')
     os.system(f'cp -rf {retrosoc_repo_path}/{v} .')
