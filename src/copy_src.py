@@ -31,6 +31,7 @@ src_files = [
     'rtl/ip/cust/i2c.v',
     'rtl/ip/cust/psram_core.v',
     'rtl/ip/cust/psram.v',
+    'rtl/ip/cust/spfs/spi_defines.v',
     'rtl/ip/cust/spfs/spi_clgen.v',
     'rtl/ip/cust/spfs/spi_shift.v',
     'rtl/ip/cust/spfs/spi_top.v',
