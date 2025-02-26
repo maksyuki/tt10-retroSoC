@@ -312,10 +312,10 @@ module retrosoc #(
       .PROGADDR_IRQ    (32'h0000_0000),
       .STACKADDR       (STACKADDR),
       .BARREL_SHIFTER  (1),
-      .COMPRESSED_ISA  (1),
-      .ENABLE_MUL      (1),
-      .ENABLE_FAST_MUL (1),
-      .ENABLE_DIV      (1),
+      .COMPRESSED_ISA  (0),
+      .ENABLE_MUL      (0),
+      .ENABLE_FAST_MUL (0),
+      .ENABLE_DIV      (0),
       .ENABLE_IRQ      (1),
       .ENABLE_IRQ_QREGS(0)
   ) u_picorv32 (
