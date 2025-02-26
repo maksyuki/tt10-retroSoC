@@ -8,7 +8,7 @@ project:
   clock_hz:     64000000                             # Clock frequency in Hz (or 0 if not applicable)
 
   # How many tiles your design occupies? A single tile is about 167x108 uM.
-  tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
+  tiles: "8x2"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
   top_module:  "tt_um_retrosoc_maksyuki"
@@ -17,39 +17,77 @@ project:
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "tt_um_retrosoc_maksyuki.v"
+    - 'rtl/ip/spimemio.v',
+    - 'rtl/ip/simpleuart.v',
+    - 'rtl/ip/counter_timer.v',
+    - 'rtl/ip/spi_slave.v',
+    - 'rtl/ip/cust/register.v'
+    - 'rtl/ip/cust/lfsr.v',
+    - 'rtl/ip/cust/fifo.v',
+    - 'rtl/ip/cust/cdc_sync.v',
+    - 'rtl/ip/cust/clk_int_div.v',
+    - 'rtl/ip/cust/edge_det.v',
+    - 'rtl/ip/cust/rst_sync.v',
+    - 'rtl/ip/cust/archinfo.v',
+    - 'rtl/ip/cust/rng.v',
+    - 'rtl/ip/cust/uart.v',
+    - 'rtl/ip/cust/pwm.v',
+    - 'rtl/ip/cust/ps2.v',
+    - 'rtl/ip/cust/i2c.v',
+    - 'rtl/ip/cust/psram_core.v',
+    - 'rtl/ip/cust/psram.v',
+    - 'rtl/ip/cust/spfs/spi_clgen.v',
+    - 'rtl/ip/cust/spfs/spi_shift.v',
+    - 'rtl/ip/cust/spfs/spi_top.v',
+    - 'rtl/ip/cust/spfs/spi_flash.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_apb_if.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_clkgen.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_controller.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_fifo.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_rx.v',
+    - 'rtl/ip/cust/apb_spi_master/spi_master_tx.v',
+    - 'rtl/ip/cust/apb_spi_master/apb_spi_master.v',
+    - 'rtl/ip/cust/axil2apb/flop.v',
+    - 'rtl/ip/cust/axil2apb/address_decoder.v',
+    - 'rtl/ip/cust/axil2apb/read_data_mux.v',
+    - 'rtl/ip/cust/axil2apb/apb_master.v',
+    - 'rtl/ip/cust/axil2apb/axi_apb_bridge.v',
+    - 'rtl/ip/axil_ip_wrapper.v',
+    - 'rtl/picorv32.v',
+    - 'rtl/retrosoc.v',
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
   # Inputs
-  ui[0]: ""
-  ui[1]: ""
-  ui[2]: ""
-  ui[3]: ""
-  ui[4]: ""
-  ui[5]: ""
-  ui[6]: ""
-  ui[7]: ""
+  ui[0]: "s_uart_rx_i"
+  ui[1]: "s_cust_uart_rx_i"
+  ui[2]: "s_cust_ps2_ps2_clk_i"
+  ui[3]: "s_cust_ps2_ps2_dat_i"
+  ui[4]: "s_gpio_in_i[1]"
+  ui[5]: "s_gpio_in_i[2]"
+  ui[6]: "s_gpio_in_i[3]"
+  ui[7]: "s_cust_spfs_miso_i"
 
   # Outputs
-  uo[0]: ""
-  uo[1]: ""
-  uo[2]: ""
-  uo[3]: ""
-  uo[4]: ""
-  uo[5]: ""
-  uo[6]: ""
-  uo[7]: ""
+  uo[0]: "s_cust_spfs_clk_o"
+  uo[1]: "s_cust_spfs_cs_o"
+  uo[2]: "s_cust_spfs_mosi_o"
+  uo[3]: "s_uart_tx_o"
+  uo[4]: "s_cust_qspi_spi_clk_o"
+  uo[5]: "s_cust_qspi_spi_csn_o[0]"
+  uo[6]: "s_cust_psram_sclk_o"
+  uo[7]: "s_cust_psram_ce_o"
 
   # Bidirectional pins
-  uio[0]: ""
-  uio[1]: ""
-  uio[2]: ""
-  uio[3]: ""
-  uio[4]: ""
-  uio[5]: ""
-  uio[6]: ""
-  uio[7]: ""
+  uio[0]: "s_cust_psram_sio0_io"
+  uio[1]: "s_cust_psram_sio1_io"
+  uio[2]: "s_cust_psram_sio2_io"
+  uio[3]: "s_cust_psram_sio3_io"
+  uio[4]: "s_cust_qspi_spi_sdio"
+  uio[5]: "s_cust_i2c_scl_io"
+  uio[6]: "s_cust_i2c_sda_io"
+  uio[7]: "s_gpio_io[0]"
 
 # Do not change!
 yaml_version: 6
