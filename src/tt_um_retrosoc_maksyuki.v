@@ -21,7 +21,6 @@ module tt_um_retrosoc_maksyuki (
   wire [15:0] s_gpio_outenb_o;
   wire        s_uart_tx_o;
   wire        s_uart_rx_i;
-  wire        s_cust_uart_rx_i;
   wire        s_cust_ps2_ps2_clk_i;
   wire        s_cust_ps2_ps2_dat_i;
   wire        s_cust_i2c_scl_i;
@@ -52,16 +51,16 @@ module tt_um_retrosoc_maksyuki (
   wire        s_cust_spfs_miso_i;
 
   // gpio setting
-  assign s_gpio_in_i[15:4]          = 12'd0;
+  assign s_gpio_in_i[15:5]          = 11'd0;
   assign s_cust_qspi_spi_sdi_i[3:1] = 3'd0;
   // in
   assign s_uart_rx_i                = ui_in[0];
-  assign s_cust_uart_rx_i           = ui_in[1];
-  assign s_cust_ps2_ps2_clk_i       = ui_in[2];
-  assign s_cust_ps2_ps2_dat_i       = ui_in[3];
-  assign s_gpio_in_i[1]             = ui_in[4];
-  assign s_gpio_in_i[2]             = ui_in[5];
-  assign s_gpio_in_i[3]             = ui_in[6];
+  assign s_cust_ps2_ps2_clk_i       = ui_in[1];
+  assign s_cust_ps2_ps2_dat_i       = ui_in[2];
+  assign s_gpio_in_i[1]             = ui_in[3];
+  assign s_gpio_in_i[2]             = ui_in[4];
+  assign s_gpio_in_i[3]             = ui_in[5];
+  assign s_gpio_in_i[4]             = ui_in[6];
   assign s_cust_spfs_miso_i         = ui_in[7];
   // out
   assign uo_out[0]                  = s_cust_spfs_clk_o;
@@ -150,7 +149,7 @@ module tt_um_retrosoc_maksyuki (
       .flash_io1_di_i           (1'b0),
       .flash_io2_di_i           (1'b0),
       .flash_io3_di_i           (1'b0),
-      .cust_uart_rx_i           (s_cust_uart_rx_i),
+      .cust_uart_rx_i           (),
       .cust_uart_tx_o           (),
       .cust_pwm_pwm_o           (),
       .cust_ps2_ps2_clk_i       (s_cust_ps2_ps2_clk_i),
