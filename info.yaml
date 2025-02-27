@@ -20,6 +20,7 @@ project:
     - "tt_um_retrosoc_maksyuki.v"
     - "simpleuart.v"
     - "counter_timer.v"
+    - "spi_slave.v"
     - "register.v"
     - "lfsr.v"
     - "fifo.v"
