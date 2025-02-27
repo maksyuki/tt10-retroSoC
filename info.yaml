@@ -29,10 +29,6 @@ project:
     - "clk_int_div.v"
     - "edge_det.v"
     - "rst_sync.v"
-    - "archinfo.v"
-    - "rng.v"
-    - "uart.v"
-    - "pwm.v"
     - "ps2.v"
     - "i2c.v"
     - "psram_core.v"
@@ -62,7 +58,7 @@ project:
 pinout:
   # Inputs
   ui[0]: "s_uart_rx_i"
-  ui[1]: "s_cust_uart_rx_i"
+  ui[1]: "s_gpio_in_i[4]"
   ui[2]: "s_cust_ps2_ps2_clk_i"
   ui[3]: "s_cust_ps2_ps2_dat_i"
   ui[4]: "s_gpio_in_i[1]"
