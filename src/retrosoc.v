@@ -338,10 +338,8 @@ module retrosoc #(
   assign s_iomem_addr = s_mem_addr;
   assign s_iomem_wdata = s_mem_wdata;
   // spi flash
-  // wire        s_spimemio_cfgreg_sel = s_mem_valid && (s_mem_addr == 32'h0200_0000);
-  wire        s_spimemio_cfgreg_sel = 1'b0;
-  // wire [31:0] s_spimemio_cfgreg_dout;
-  wire [31:0] s_spimemio_cfgreg_dout = 32'd0;
+  wire        s_spimemio_cfgreg_sel = s_mem_valid && (s_mem_addr == 32'h0200_0000);
+  wire [31:0] s_spimemio_cfgreg_dout;
   // uart
   wire        s_simpleuart_reg_div_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0010);
   wire        s_simpleuart_reg_dat_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0014);
@@ -370,53 +368,38 @@ module retrosoc #(
   reg  [ 2:0] r_psram_cfg_chd_din;
   wire [ 2:0] s_psram_cfg_chd_dout;
 
-  assign hk_pt_sdo_o     = 1'b0;
-  assign flash_csb_o     = 1'b0;
-  assign flash_clk_o     = 1'b0;
-  assign flash_csb_oeb_o = 1'b0;
-  assign flash_clk_oeb_o = 1'b0;
-  assign flash_io0_oeb_o = 1'b0;
-  assign flash_io1_oeb_o = 1'b0;
-  assign flash_io2_oeb_o = 1'b0;
-  assign flash_io3_oeb_o = 1'b0;
-  assign flash_io0_do_o  = 1'b0;
-  assign flash_io1_do_o  = 1'b0;
-  assign flash_io2_do_o  = 1'b0;
-  assign flash_io3_do_o  = 1'b0;
-  assign s_spimem_ready  = 1'b0;
-
-  // spimemio u_spimemio (
-  //     .clk          (clk_i),
-  //     .resetn       (rst_n_i),
-  //     .valid        (s_mem_valid && s_mem_addr >= 4 * MEM_WORDS && s_mem_addr < 32'h0200_0000),
-  //     .ready        (s_spimem_ready),
-  //     .addr         (s_mem_addr[23:0]),
-  //     .rdata        (s_spimem_rdata),
-  //     .pass_thru    (hk_pt_i),
-  //     .pass_thru_csb(hk_pt_csb_i),
-  //     .pass_thru_sck(hk_pt_sck_i),
-  //     .pass_thru_sdi(hk_pt_sdi_i),
-  //     .pass_thru_sdo(hk_pt_sdo_o),
-  //     .flash_csb    (flash_csb_o),
-  //     .flash_clk    (flash_clk_o),
-  //     .flash_csb_oeb(flash_csb_oeb_o),
-  //     .flash_clk_oeb(flash_clk_oeb_o),
-  //     .flash_io0_oeb(flash_io0_oeb_o),
-  //     .flash_io1_oeb(flash_io1_oeb_o),
-  //     .flash_io2_oeb(flash_io2_oeb_o),
-  //     .flash_io3_oeb(flash_io3_oeb_o),
-  //     .flash_io0_do (flash_io0_do_o),
-  //     .flash_io1_do (flash_io1_do_o),
-  //     .flash_io2_do (flash_io2_do_o),
-  //     .flash_io3_do (flash_io3_do_o),
-  //     .flash_io0_di (flash_io0_di_i),
-  //     .flash_io1_di (flash_io1_di_i),
-  //     .flash_io2_di (flash_io2_di_i),
-  //     .flash_io3_di (flash_io3_di_i),
-  //     .cfgreg_we    (s_spimemio_cfgreg_sel ? s_mem_wstrb : 4'b0000),
-  //     .cfgreg_di    (s_mem_wdata),
-  //     .cfgreg_do    (s_spimemio_cfgreg_dout)
-  // );
+  spimemio u_spimemio (
+      .clk          (clk_i),
+      .resetn       (rst_n_i),
+      .valid        (s_mem_valid && s_mem_addr >= 4 * MEM_WORDS && s_mem_addr < 32'h0200_0000),
+      .ready        (s_spimem_ready),
+      .addr         (s_mem_addr[23:0]),
+      .rdata        (s_spimem_rdata),
+      .pass_thru    (hk_pt_i),
+      .pass_thru_csb(hk_pt_csb_i),
+      .pass_thru_sck(hk_pt_sck_i),
+      .pass_thru_sdi(hk_pt_sdi_i),
+      .pass_thru_sdo(hk_pt_sdo_o),
+      .flash_csb    (flash_csb_o),
+      .flash_clk    (flash_clk_o),
+      .flash_csb_oeb(flash_csb_oeb_o),
+      .flash_clk_oeb(flash_clk_oeb_o),
+      .flash_io0_oeb(flash_io0_oeb_o),
+      .flash_io1_oeb(flash_io1_oeb_o),
+      .flash_io2_oeb(flash_io2_oeb_o),
+      .flash_io3_oeb(flash_io3_oeb_o),
+      .flash_io0_do (flash_io0_do_o),
+      .flash_io1_do (flash_io1_do_o),
+      .flash_io2_do (flash_io2_do_o),
+      .flash_io3_do (flash_io3_do_o),
+      .flash_io0_di (flash_io0_di_i),
+      .flash_io1_di (flash_io1_di_i),
+      .flash_io2_di (flash_io2_di_i),
+      .flash_io3_di (flash_io3_di_i),
+      .cfgreg_we    (s_spimemio_cfgreg_sel ? s_mem_wstrb : 4'b0000),
+      .cfgreg_di    (s_mem_wdata),
+      .cfgreg_do    (s_spimemio_cfgreg_dout)
+  );
 
   simpleuart u_simpleuart (
       .clk         (clk_i),
