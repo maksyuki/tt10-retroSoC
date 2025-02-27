@@ -53,12 +53,12 @@ module axil_ip_wrapper (
     output        spfs_irq_o
 );
 
-  localparam APB_SLAVES_NUM = 8;
+  localparam APB_SLAVES_NUM = 5;
   localparam [32*APB_SLAVES_NUM-1 : 0] MEM_REGIONS1 = {
-    32'h3000_0000, 224'h0300_7000__0300_6000__0300_5000__0300_4000__0300_3000__0300_2000__0300_1000
+    32'h3000_0000, 128'h0300_4000__0300_3000__0300_2000__0300_1000
   };
   localparam [32*APB_SLAVES_NUM-1 : 0] MEM_REGIONS2 = {
-    32'h3FFF_FFFF, 224'h0300_7FFF__0300_6FFF__0300_5FFF__0300_4FFF__0300_3FFF__0300_2FFF__0300_1FFF
+    32'h3FFF_FFFF, 128'h0300_4FFF__0300_3FFF__0300_2FFF__0300_1FFF
   };
 
   wire [              31:0] s_m_apb_paddr;
@@ -75,12 +75,29 @@ module axil_ip_wrapper (
   wire [              31:0] s_m_apb_prdata3;
   wire [              31:0] s_m_apb_prdata4;
   wire [              31:0] s_m_apb_prdata5;
-  wire [              31:0] s_m_apb_prdata6;
-  wire [              31:0] s_m_apb_prdata7;
-  wire [              31:0] s_m_apb_prdata8;
   wire [APB_SLAVES_NUM-1:0] s_m_apb_pslverr;
 
-  apb4_archinfo u_apb4_archinfo (
+
+  assign uart_tx_o  = 1'b0;
+  assign uart_irq_o = 1'b0;
+  assign pwm_pwm_o  = 4'd0;
+  assign pwm_irq_o  = 1'b0;
+  //   apb4_archinfo u_apb4_archinfo (
+  //       .pclk   (clk_i),
+  //       .presetn(rst_n_i),
+  //       .paddr  (s_m_apb_paddr),
+  //       .pprot  (s_m_apb_pprot),
+  //       .psel   (s_m_apb_psel[0]),
+  //       .penable(s_m_apb_penable),
+  //       .pwrite (s_m_apb_pwrite),
+  //       .pwdata (s_m_apb_pwdata),
+  //       .pstrb  (s_m_apb_pstrb),
+  //       .pready (s_m_apb_pready[0]),
+  //       .prdata (s_m_apb_prdata1),
+  //       .pslverr(s_m_apb_pslverr[0])
+  //   );
+
+  apb4_rng u_apb4_rng (
       .pclk   (clk_i),
       .presetn(rst_n_i),
       .paddr  (s_m_apb_paddr),
@@ -95,22 +112,61 @@ module axil_ip_wrapper (
       .pslverr(s_m_apb_pslverr[0])
   );
 
-  apb4_rng u_apb4_rng (
-      .pclk   (clk_i),
-      .presetn(rst_n_i),
-      .paddr  (s_m_apb_paddr),
-      .pprot  (s_m_apb_pprot),
-      .psel   (s_m_apb_psel[1]),
-      .penable(s_m_apb_penable),
-      .pwrite (s_m_apb_pwrite),
-      .pwdata (s_m_apb_pwdata),
-      .pstrb  (s_m_apb_pstrb),
-      .pready (s_m_apb_pready[1]),
-      .prdata (s_m_apb_prdata2),
-      .pslverr(s_m_apb_pslverr[1])
+  //   apb4_uart u_apb4_uart (
+  //       .pclk     (clk_i),
+  //       .presetn  (rst_n_i),
+  //       .paddr    (s_m_apb_paddr),
+  //       .pprot    (s_m_apb_pprot),
+  //       .psel     (s_m_apb_psel[2]),
+  //       .penable  (s_m_apb_penable),
+  //       .pwrite   (s_m_apb_pwrite),
+  //       .pwdata   (s_m_apb_pwdata),
+  //       .pstrb    (s_m_apb_pstrb),
+  //       .pready   (s_m_apb_pready[2]),
+  //       .prdata   (s_m_apb_prdata3),
+  //       .pslverr  (s_m_apb_pslverr[2]),
+  //       .uart_rx_i(uart_rx_i),
+  //       .uart_tx_o(uart_tx_o),
+  //       .irq_o    (uart_irq_o)
+  //   );
+
+  //   apb4_pwm u_apb4_pwm (
+  //       .pclk   (clk_i),
+  //       .presetn(rst_n_i),
+  //       .paddr  (s_m_apb_paddr),
+  //       .pprot  (s_m_apb_pprot),
+  //       .psel   (s_m_apb_psel[3]),
+  //       .penable(s_m_apb_penable),
+  //       .pwrite (s_m_apb_pwrite),
+  //       .pwdata (s_m_apb_pwdata),
+  //       .pstrb  (s_m_apb_pstrb),
+  //       .pready (s_m_apb_pready[3]),
+  //       .prdata (s_m_apb_prdata4),
+  //       .pslverr(s_m_apb_pslverr[3]),
+  //       .pwm_o  (pwm_pwm_o),
+  //       .irq_o  (pwm_irq_o)
+  //   );
+
+  apb4_ps2 u_apb4_ps2 (
+      .pclk     (clk_i),
+      .presetn  (rst_n_i),
+      .paddr    (s_m_apb_paddr),
+      .pprot    (s_m_apb_pprot),
+      .psel     (s_m_apb_psel[1]),
+      .penable  (s_m_apb_penable),
+      .pwrite   (s_m_apb_pwrite),
+      .pwdata   (s_m_apb_pwdata),
+      .pstrb    (s_m_apb_pstrb),
+      .pready   (s_m_apb_pready[1]),
+      .prdata   (s_m_apb_prdata2),
+      .pslverr  (s_m_apb_pslverr[1]),
+      .ps2_clk_i(ps2_ps2_clk_i),
+      .ps2_dat_i(ps2_ps2_dat_i),
+      .irq_o    (ps2_irq_o)
   );
 
-  apb4_uart u_apb4_uart (
+
+  apb4_i2c u_apb4_i2c (
       .pclk     (clk_i),
       .presetn  (rst_n_i),
       .paddr    (s_m_apb_paddr),
@@ -123,60 +179,6 @@ module axil_ip_wrapper (
       .pready   (s_m_apb_pready[2]),
       .prdata   (s_m_apb_prdata3),
       .pslverr  (s_m_apb_pslverr[2]),
-      .uart_rx_i(uart_rx_i),
-      .uart_tx_o(uart_tx_o),
-      .irq_o    (uart_irq_o)
-  );
-
-  apb4_pwm u_apb4_pwm (
-      .pclk   (clk_i),
-      .presetn(rst_n_i),
-      .paddr  (s_m_apb_paddr),
-      .pprot  (s_m_apb_pprot),
-      .psel   (s_m_apb_psel[3]),
-      .penable(s_m_apb_penable),
-      .pwrite (s_m_apb_pwrite),
-      .pwdata (s_m_apb_pwdata),
-      .pstrb  (s_m_apb_pstrb),
-      .pready (s_m_apb_pready[3]),
-      .prdata (s_m_apb_prdata4),
-      .pslverr(s_m_apb_pslverr[3]),
-      .pwm_o  (pwm_pwm_o),
-      .irq_o  (pwm_irq_o)
-  );
-
-  apb4_ps2 u_apb4_ps2 (
-      .pclk     (clk_i),
-      .presetn  (rst_n_i),
-      .paddr    (s_m_apb_paddr),
-      .pprot    (s_m_apb_pprot),
-      .psel     (s_m_apb_psel[4]),
-      .penable  (s_m_apb_penable),
-      .pwrite   (s_m_apb_pwrite),
-      .pwdata   (s_m_apb_pwdata),
-      .pstrb    (s_m_apb_pstrb),
-      .pready   (s_m_apb_pready[4]),
-      .prdata   (s_m_apb_prdata5),
-      .pslverr  (s_m_apb_pslverr[4]),
-      .ps2_clk_i(ps2_ps2_clk_i),
-      .ps2_dat_i(ps2_ps2_dat_i),
-      .irq_o    (ps2_irq_o)
-  );
-
-
-  apb4_i2c u_apb4_i2c (
-      .pclk     (clk_i),
-      .presetn  (rst_n_i),
-      .paddr    (s_m_apb_paddr),
-      .pprot    (s_m_apb_pprot),
-      .psel     (s_m_apb_psel[5]),
-      .penable  (s_m_apb_penable),
-      .pwrite   (s_m_apb_pwrite),
-      .pwdata   (s_m_apb_pwdata),
-      .pstrb    (s_m_apb_pstrb),
-      .pready   (s_m_apb_pready[5]),
-      .prdata   (s_m_apb_prdata6),
-      .pslverr  (s_m_apb_pslverr[5]),
       .scl_i    (i2c_scl_i),
       .scl_o    (i2c_scl_o),
       .scl_dir_o(i2c_scl_dir_o),
@@ -195,11 +197,11 @@ module axil_ip_wrapper (
       .PADDR   (s_m_apb_paddr),
       .PWDATA  (s_m_apb_pwdata),
       .PWRITE  (s_m_apb_pwrite),
-      .PSEL    (s_m_apb_psel[6]),
+      .PSEL    (s_m_apb_psel[3]),
       .PENABLE (s_m_apb_penable),
-      .PRDATA  (s_m_apb_prdata7),
-      .PREADY  (s_m_apb_pready[6]),
-      .PSLVERR (s_m_apb_pslverr[6]),
+      .PRDATA  (s_m_apb_prdata4),
+      .PREADY  (s_m_apb_pready[3]),
+      .PSLVERR (s_m_apb_pslverr[3]),
       .spi_clk (qspi_spi_clk_o),
       .spi_csn0(qspi_spi_csn_o[0]),
       .spi_csn1(qspi_spi_csn_o[1]),
@@ -228,14 +230,14 @@ module axil_ip_wrapper (
       .pclk       (clk_i),
       .presetn    (rst_n_i),
       .paddr      (s_m_apb_paddr),
-      .psel       (s_m_apb_psel[7]),
+      .psel       (s_m_apb_psel[4]),
       .penable    (s_m_apb_penable),
       .pwrite     (s_m_apb_pwrite),
       .pwdata     (s_m_apb_pwdata),
       .pwstrb     (4'hF),
-      .pready     (s_m_apb_pready[7]),
-      .prdata     (s_m_apb_prdata8),
-      .pslverr    (s_m_apb_pslverr[7]),
+      .pready     (s_m_apb_pready[4]),
+      .prdata     (s_m_apb_prdata5),
+      .pslverr    (s_m_apb_pslverr[4]),
       .div4_i     (spfs_div4_i),
       .spi_clk    (spfs_clk_o),
       .spi_cs     (spfs_cs_o),
@@ -287,9 +289,9 @@ module axil_ip_wrapper (
       .m_apb_prdata3 (s_m_apb_prdata3),
       .m_apb_prdata4 (s_m_apb_prdata4),
       .m_apb_prdata5 (s_m_apb_prdata5),
-      .m_apb_prdata6 (s_m_apb_prdata6),
-      .m_apb_prdata7 (s_m_apb_prdata7),
-      .m_apb_prdata8 (s_m_apb_prdata8),
+      .m_apb_prdata6 (),
+      .m_apb_prdata7 (),
+      .m_apb_prdata8 (),
       .m_apb_prdata9 (32'h0),
       .m_apb_prdata10(32'h0),
       .m_apb_prdata11(32'h0),
