@@ -36,10 +36,10 @@ module retrosoc #(
     input         rst_n_i,
     input         clk_ext_sel_i,
     // pass-through mode from housekeeping SPI
-    input         hk_pt_i,
-    input         hk_pt_csb_i,
-    input         hk_pt_sck_i,
-    input         hk_pt_sdi_i,
+    // input         hk_pt_i,
+    // input         hk_pt_csb_i,
+    // input         hk_pt_sck_i,
+    // input         hk_pt_sdi_i,
     output        hk_pt_sdo_o,
     //sram if including clk_i and rst_n_i above
     output [ 3:0] ram_wstrb_o,
@@ -81,10 +81,10 @@ module retrosoc #(
     output        flash_io1_do_o,
     output        flash_io2_do_o,
     output        flash_io3_do_o,
-    input         flash_io0_di_i,
-    input         flash_io1_di_i,
-    input         flash_io2_di_i,
-    input         flash_io3_di_i,
+    // input         flash_io0_di_i,
+    // input         flash_io1_di_i,
+    // input         flash_io2_di_i,
+    // input         flash_io3_di_i,
     // cust
     input         cust_uart_rx_i,
     output        cust_uart_tx_o,
@@ -383,7 +383,7 @@ module retrosoc #(
   assign flash_io1_do_o  = 1'b0;
   assign flash_io2_do_o  = 1'b0;
   assign flash_io3_do_o  = 1'b0;
-
+  assign s_spimem_ready  = 1'b0;
 
   // spimemio u_spimemio (
   //     .clk          (clk_i),
