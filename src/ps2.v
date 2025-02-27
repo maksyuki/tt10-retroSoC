@@ -163,7 +163,7 @@ module apb4_ps2 (
   end
   fifo #(
       .DATA_WIDTH  (8),
-      .BUFFER_DEPTH(16)
+      .BUFFER_DEPTH(4)
   ) u_ps2_fifo (
       .clk_i  (pclk),
       .rst_n_i(presetn),
