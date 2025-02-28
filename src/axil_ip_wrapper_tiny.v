@@ -52,7 +52,7 @@ module axil_ip_wrapper_tiny (
   wire [APB_SLAVES_NUM-1:0] s_m_apb_pslverr;
 
   apb_spi_master #(
-      .BUFFER_DEPTH  (1),
+      .BUFFER_DEPTH  (4),
       .APB_ADDR_WIDTH(32)
   ) u_apb_spi_master (
       .HCLK    (clk_i),
