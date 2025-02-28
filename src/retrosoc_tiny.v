@@ -218,30 +218,45 @@ module retrosoc_tiny #(
   //    1 x QSPI
   //    1 x PSRAM(8MB)
   //    1 x SPFS(HP)
-  picorv32 #(
-      .PROGADDR_RESET  (PROGADDR_RESET),
-      .PROGADDR_IRQ    (32'h0000_0000),
-      .STACKADDR       (STACKADDR),
-      .BARREL_SHIFTER  (1),
-      .COMPRESSED_ISA  (0),
-      .ENABLE_MUL      (0),
-      .ENABLE_FAST_MUL (0),
-      .ENABLE_DIV      (0),
-      .ENABLE_IRQ      (1),
-      .ENABLE_IRQ_QREGS(0)
-  ) u_picorv32 (
+  kianv_harris_mc_edition #(
+      .RESET_ADDR(PROGADDR_RESET),
+      .RV32E     (1'b1)
+  ) kianv_I (
       .clk      (clk_i),
       .resetn   (rst_n_i),
-      .mem_valid(s_mem_valid),
-      .mem_instr(s_mem_instr),
       .mem_ready(s_mem_ready),
+      .mem_valid(s_mem_valid),
+      .mem_wstrb(s_mem_wstrb),
       .mem_addr (s_mem_addr),
       .mem_wdata(s_mem_wdata),
-      .mem_wstrb(s_mem_wstrb),
       .mem_rdata(s_mem_rdata),
-      .irq      (s_irq),
-      .trap     ()
+      .PC       ()
   );
+
+  // picorv32 #(
+  //     .PROGADDR_RESET  (PROGADDR_RESET),
+  //     .PROGADDR_IRQ    (32'h0000_0000),
+  //     .STACKADDR       (STACKADDR),
+  //     .BARREL_SHIFTER  (1),
+  //     .COMPRESSED_ISA  (0),
+  //     .ENABLE_MUL      (0),
+  //     .ENABLE_FAST_MUL (0),
+  //     .ENABLE_DIV      (0),
+  //     .ENABLE_IRQ      (1),
+  //     .ENABLE_IRQ_QREGS(0)
+  // ) u_picorv32 (
+  //     .clk      (clk_i),
+  //     .resetn   (rst_n_i),
+  //     .mem_valid(s_mem_valid),
+  //     .mem_instr(s_mem_instr),
+  //     .mem_ready(s_mem_ready),
+  //     .mem_addr (s_mem_addr),
+  //     .mem_wdata(s_mem_wdata),
+  //     .mem_wstrb(s_mem_wstrb),
+  //     .mem_rdata(s_mem_rdata),
+  //     .irq      (s_irq),
+  //     .trap     ()
+  // );
 
   // mmio native perip
   assign s_iomem_valid = s_mem_valid && (s_mem_addr[31:24] == 8'h03 || s_mem_addr >= 32'h3000_0000);
@@ -354,7 +369,7 @@ module retrosoc_tiny #(
       .mem_axi_rready (s_mem_axi_rready),
       .mem_axi_rdata  (s_mem_axi_rdata),
       .mem_valid      (s_iomem_valid && s_aximem_range),
-      .mem_instr      (s_mem_instr),
+      .mem_instr      (1'b0),
       .mem_ready      (s_aximem_ready),
       .mem_addr       (s_iomem_addr),
       .mem_wdata      (s_iomem_wdata),

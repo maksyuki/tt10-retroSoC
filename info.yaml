@@ -43,6 +43,21 @@ project:
     - "axil_ip_wrapper_tiny.v"
     - "picorv32.v"
     - "retrosoc_tiny.v"
+    - "defines_soc.vh"
+    - "riscv_defines.vh"
+    - "design_elements.v"
+    - "alu_decoder.v"
+    - "datapath_unit.v"
+    - "extend.v"
+    - "load_alignment.v"
+    - "alu.v"
+    - "load_decoder.v"
+    - "register_file.v"
+    - "main_fsm.v"
+    - "store_alignment.v"
+    - "store_decoder.v"
+    - "control_unit.v"
+    - "kianv_harris_mc_edition.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
