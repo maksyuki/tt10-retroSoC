@@ -43,7 +43,7 @@ module tt_um_retrosoc_maksyuki (
   wire        s_cust_spfs_miso_i;
 
   // gpio setting
-  assign s_gpio_in_i[15:7]          = 9'd0;
+  assign s_gpio_in_i[15:9]          = 7'd0;
   assign s_cust_qspi_spi_sdi_i[3:1] = 3'd0;
   // in
   assign s_uart_rx_i                = ui_in[0];
