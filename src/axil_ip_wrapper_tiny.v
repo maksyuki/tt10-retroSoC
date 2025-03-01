@@ -142,7 +142,7 @@ module axil_ip_wrapper_tiny (
   );
 
   apb_spi_master #(
-      .BUFFER_DEPTH  (4),
+      .BUFFER_DEPTH  (8),
       .APB_ADDR_WIDTH(32)
   ) u_apb_spi_master (
       .HCLK    (clk_i),
