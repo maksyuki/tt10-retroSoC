@@ -54,6 +54,8 @@ module retrosoc_tiny #(
     output        uart_tx_o,
     input         uart_rx_i,
     // cust
+    input         cust_ps2_ps2_clk_i,
+    input         cust_ps2_ps2_dat_i,
     input         cust_i2c_scl_i,
     output        cust_i2c_scl_o,
     output        cust_i2c_scl_dir_o,
@@ -403,6 +405,9 @@ module retrosoc_tiny #(
       .mem_axi_rvalid (s_mem_axi_rvalid),
       .mem_axi_rready (s_mem_axi_rready),
       .mem_axi_rdata  (s_mem_axi_rdata),
+      .ps2_ps2_clk_i  (cust_ps2_ps2_clk_i),
+      .ps2_ps2_dat_i  (cust_ps2_ps2_dat_i),
+      .ps2_irq_o      (),
       .i2c_scl_i      (cust_i2c_scl_i),
       .i2c_scl_o      (cust_i2c_scl_o),
       .i2c_scl_dir_o  (cust_i2c_scl_dir_o),
