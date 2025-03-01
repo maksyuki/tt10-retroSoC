@@ -22,6 +22,7 @@ project:
     - "counter_timer.v"
     - "register.v"
     - "lfsr.v"
+    - "rng.v"
     - "cdc_sync.v"
     - "edge_det.v"
     - "fifo.v"
