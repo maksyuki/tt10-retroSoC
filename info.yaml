@@ -21,6 +21,7 @@ project:
     - "simpleuart.v"
     - "counter_timer.v"
     - "register.v"
+    - "cdc_sync.v"
     - "edge_det.v"
     - "fifo.v"
     - "ps2.v"
