@@ -199,13 +199,13 @@ module i2c_master_bit_ctrl (
   reg [17:0] r_c_state;
   // whenever the slave is not ready it can delay the cycle by pulling SCL low
   // delay scl_dir_o
-  always @(posedge clk_i) r_dscl_dir <= #1 scl_dir_o;
+  always @(posedge clk_i) r_dscl_dir <=  scl_dir_o;
 
   // r_slave_wait is asserted when master wants to drive SCL high, but the slave pulls it low
   // r_slave_wait remains asserted until the slave releases SCL
   always @(posedge clk_i or negedge rst_n_i)
-    if (!rst_n_i) r_slave_wait <= #1 1'b0;
-    else r_slave_wait <= #1 (scl_dir_o & ~r_dscl_dir & ~r_sSCL) | (r_slave_wait & ~r_sSCL);
+    if (!rst_n_i) r_slave_wait <=  1'b0;
+    else r_slave_wait <=  (scl_dir_o & ~r_dscl_dir & ~r_sSCL) | (r_slave_wait & ~r_sSCL);
   // scl_dir_o & ~r_dscl_dir mean scl_dir rise edge trigger
 
   // master drives SCL high, but another master pulls it low
@@ -216,17 +216,17 @@ module i2c_master_bit_ctrl (
   // generate clk_i enable signal
   always @(posedge clk_i or negedge rst_n_i)
     if (~rst_n_i) begin
-      r_cnt    <= #1 16'h0;
-      r_clk_en <= #1 1'b1;
+      r_cnt    <=  16'h0;
+      r_clk_en <=  1'b1;
     end else if (~|r_cnt || !ena_i || s_scl_sync) begin
-      r_cnt    <= #1 clk_cnt_i;
-      r_clk_en <= #1 1'b1;
+      r_cnt    <=  clk_cnt_i;
+      r_clk_en <=  1'b1;
     end else if (r_slave_wait) begin
-      r_cnt    <= #1 r_cnt;
-      r_clk_en <= #1 1'b0;
+      r_cnt    <=  r_cnt;
+      r_clk_en <=  1'b0;
     end else begin
-      r_cnt    <= #1 r_cnt - 16'h1;
-      r_clk_en <= #1 1'b0;
+      r_cnt    <=  r_cnt - 16'h1;
+      r_clk_en <=  1'b0;
     end
 
 
@@ -235,46 +235,46 @@ module i2c_master_bit_ctrl (
   // reduce metastability risk
   always @(posedge clk_i or negedge rst_n_i)
     if (!rst_n_i) begin
-      r_cSCL <= #1 2'b00;
-      r_cSDA <= #1 2'b00;
+      r_cSCL <=  2'b00;
+      r_cSDA <=  2'b00;
     end else begin
-      r_cSCL <= #1{r_cSCL[0], scl_i};
-      r_cSDA <= #1{r_cSDA[0], sda_i};
+      r_cSCL <= {r_cSCL[0], scl_i};
+      r_cSDA <= {r_cSDA[0], sda_i};
     end
 
 
   // filter SCL and SDA signals; (attempt to) remove glitches
   always @(posedge clk_i or negedge rst_n_i)
-    if (!rst_n_i) r_filter_cnt <= #1 14'h0;
-    else if (!ena_i) r_filter_cnt <= #1 14'h0;
-    else if (~|r_filter_cnt) r_filter_cnt <= #1 clk_cnt_i >> 2;  //16x I2C bus frequency
-    else r_filter_cnt <= #1 r_filter_cnt - 1;
+    if (!rst_n_i) r_filter_cnt <=  14'h0;
+    else if (!ena_i) r_filter_cnt <=  14'h0;
+    else if (~|r_filter_cnt) r_filter_cnt <=  clk_cnt_i >> 2;  //16x I2C bus frequency
+    else r_filter_cnt <=  r_filter_cnt - 1;
 
 
   always @(posedge clk_i or negedge rst_n_i)
     if (!rst_n_i) begin
-      r_fSCL <= #1 3'b111;
-      r_fSDA <= #1 3'b111;
+      r_fSCL <=  3'b111;
+      r_fSDA <=  3'b111;
     end else if (~|r_filter_cnt) begin
-      r_fSCL <= #1{r_fSCL[1:0], r_cSCL[1]};
-      r_fSDA <= #1{r_fSDA[1:0], r_cSDA[1]};
+      r_fSCL <= {r_fSCL[1:0], r_cSCL[1]};
+      r_fSDA <= {r_fSDA[1:0], r_cSDA[1]};
     end
 
 
   // generate filtered SCL and SDA signals
   always @(posedge clk_i or negedge rst_n_i)
     if (~rst_n_i) begin
-      r_sSCL <= #1 1'b1;
-      r_sSDA <= #1 1'b1;
+      r_sSCL <=  1'b1;
+      r_sSDA <=  1'b1;
 
-      r_dSCL <= #1 1'b1;
-      r_dSDA <= #1 1'b1;
+      r_dSCL <=  1'b1;
+      r_dSDA <=  1'b1;
     end else begin  // every 2 bits of 3 bits calc bit-and
-      r_sSCL <= #1 &r_fSCL[2:1] | &r_fSCL[1:0] | (r_fSCL[2] & r_fSCL[0]);
-      r_sSDA <= #1 &r_fSDA[2:1] | &r_fSDA[1:0] | (r_fSDA[2] & r_fSDA[0]);
+      r_sSCL <=  &r_fSCL[2:1] | &r_fSCL[1:0] | (r_fSCL[2] & r_fSCL[0]);
+      r_sSDA <=  &r_fSDA[2:1] | &r_fSDA[1:0] | (r_fSDA[2] & r_fSDA[0]);
 
-      r_dSCL <= #1 r_sSCL;
-      r_dSDA <= #1 r_sSDA;
+      r_dSCL <=  r_sSCL;
+      r_dSDA <=  r_sSDA;
     end
 
   // detect start condition => detect falling edge on SDA while SCL is high
@@ -283,18 +283,18 @@ module i2c_master_bit_ctrl (
   reg r_sto_cond;
   always @(posedge clk_i or negedge rst_n_i)
     if (~rst_n_i) begin
-      r_sta_cond <= #1 1'b0;
-      r_sto_cond <= #1 1'b0;
+      r_sta_cond <=  1'b0;
+      r_sto_cond <=  1'b0;
     end else begin
-      r_sta_cond <= #1 ~r_sSDA & r_dSDA & r_sSCL;
-      r_sto_cond <= #1 r_sSDA & ~r_dSDA & r_sSCL;
+      r_sta_cond <=  ~r_sSDA & r_dSDA & r_sSCL;
+      r_sto_cond <=  r_sSDA & ~r_dSDA & r_sSCL;
     end
 
 
   // generate i2c bus busy_o signal
   always @(posedge clk_i or negedge rst_n_i)
-    if (!rst_n_i) busy_o <= #1 1'b0;
-    else busy_o <= #1 (r_sta_cond | busy_o) & ~r_sto_cond;
+    if (!rst_n_i) busy_o <=  1'b0;
+    else busy_o <=  (r_sta_cond | busy_o) & ~r_sto_cond;
 
 
   // generate arbitration lost signal
@@ -303,15 +303,15 @@ module i2c_master_bit_ctrl (
   // 2) stop detected while not requested
   reg r_cmd_stop;
   always @(posedge clk_i or negedge rst_n_i)
-    if (~rst_n_i) r_cmd_stop <= #1 1'b0;
-    else if (r_clk_en) r_cmd_stop <= #1 cmd_i == `I2C_CMD_STOP;
+    if (~rst_n_i) r_cmd_stop <=  1'b0;
+    else if (r_clk_en) r_cmd_stop <=  cmd_i == `I2C_CMD_STOP;
 
   always @(posedge clk_i or negedge rst_n_i)
-    if (~rst_n_i) al_o <= #1 1'b0;
-    else al_o <= #1 (r_sda_chk & ~r_sSDA & sda_dir_o) | (|r_c_state & r_sto_cond & ~r_cmd_stop);
+    if (~rst_n_i) al_o <=  1'b0;
+    else al_o <=  (r_sda_chk & ~r_sSDA & sda_dir_o) | (|r_c_state & r_sto_cond & ~r_cmd_stop);
 
   // generate dat_o signal (store SDA on rising edge of SCL)
-  always @(posedge clk_i) if (r_sSCL & ~r_dSCL) dat_o <= #1 r_sSDA;
+  always @(posedge clk_i) if (r_sSCL & ~r_dSCL) dat_o <=  r_sSDA;
 
 
   // generate statemachine
@@ -337,159 +337,159 @@ module i2c_master_bit_ctrl (
 
   always @(posedge clk_i or negedge rst_n_i)
     if (!rst_n_i) begin
-      r_c_state <= #1 idle;
-      cmd_ack_o <= #1 1'b0;
-      scl_dir_o <= #1 1'b1;
-      sda_dir_o <= #1 1'b1;
-      r_sda_chk <= #1 1'b0;
+      r_c_state <=  idle;
+      cmd_ack_o <=  1'b0;
+      scl_dir_o <=  1'b1;
+      sda_dir_o <=  1'b1;
+      r_sda_chk <=  1'b0;
     end else if (al_o) begin
-      r_c_state <= #1 idle;
-      cmd_ack_o <= #1 1'b0;
-      scl_dir_o <= #1 1'b1;
-      sda_dir_o <= #1 1'b1;
-      r_sda_chk <= #1 1'b0;
+      r_c_state <=  idle;
+      cmd_ack_o <=  1'b0;
+      scl_dir_o <=  1'b1;
+      sda_dir_o <=  1'b1;
+      r_sda_chk <=  1'b0;
     end else begin
-      cmd_ack_o <= #1 1'b0;  // default no command acknowledge + assert cmd_ack_o only 1clk cycle
+      cmd_ack_o <=  1'b0;  // default no command acknowledge + assert cmd_ack_o only 1clk cycle
 
       if (r_clk_en)
         case (r_c_state)  // synopsys full_case parallel_case
           // idle state
           idle: begin
             case (cmd_i)  // synopsys full_case parallel_case
-              `I2C_CMD_START: r_c_state <= #1 start_a;
-              `I2C_CMD_STOP:  r_c_state <= #1 stop_a;
-              `I2C_CMD_WRITE: r_c_state <= #1 wr_a;
-              `I2C_CMD_READ:  r_c_state <= #1 rd_a;
-              default:        r_c_state <= #1 idle;
+              `I2C_CMD_START: r_c_state <=  start_a;
+              `I2C_CMD_STOP:  r_c_state <=  stop_a;
+              `I2C_CMD_WRITE: r_c_state <=  wr_a;
+              `I2C_CMD_READ:  r_c_state <=  rd_a;
+              default:        r_c_state <=  idle;
             endcase
 
-            scl_dir_o <= #1 scl_dir_o;  // keep SCL in same state
-            sda_dir_o <= #1 sda_dir_o;  // keep SDA in same state
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            scl_dir_o <=  scl_dir_o;  // keep SCL in same state
+            sda_dir_o <=  sda_dir_o;  // keep SDA in same state
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           start_a: begin
-            r_c_state <= #1 start_b;
-            scl_dir_o <= #1 scl_dir_o;  // keep SCL in same state
-            sda_dir_o <= #1 1'b1;  // set SDA high
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  start_b;
+            scl_dir_o <=  scl_dir_o;  // keep SCL in same state
+            sda_dir_o <=  1'b1;  // set SDA high
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           start_b: begin
-            r_c_state <= #1 start_c;
-            scl_dir_o <= #1 1'b1;  // set SCL high
-            sda_dir_o <= #1 1'b1;  // keep SDA high
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  start_c;
+            scl_dir_o <=  1'b1;  // set SCL high
+            sda_dir_o <=  1'b1;  // keep SDA high
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           start_c: begin
-            r_c_state <= #1 start_d;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 1'b0;  // set SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  start_d;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  1'b0;  // set SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           start_d: begin
-            r_c_state <= #1 start_e;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 1'b0;  // keep SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  start_e;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  1'b0;  // keep SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           start_e: begin
-            r_c_state <= #1 idle;
-            cmd_ack_o <= #1 1'b1;
-            scl_dir_o <= #1 1'b0;  // set SCL low
-            sda_dir_o <= #1 1'b0;  // keep SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  idle;
+            cmd_ack_o <=  1'b1;
+            scl_dir_o <=  1'b0;  // set SCL low
+            sda_dir_o <=  1'b0;  // keep SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           stop_a: begin
-            r_c_state <= #1 stop_b;
-            scl_dir_o <= #1 1'b0;  // keep SCL low
-            sda_dir_o <= #1 1'b0;  // set SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  stop_b;
+            scl_dir_o <=  1'b0;  // keep SCL low
+            sda_dir_o <=  1'b0;  // set SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           stop_b: begin
-            r_c_state <= #1 stop_c;
-            scl_dir_o <= #1 1'b1;  // set SCL high
-            sda_dir_o <= #1 1'b0;  // keep SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  stop_c;
+            scl_dir_o <=  1'b1;  // set SCL high
+            sda_dir_o <=  1'b0;  // keep SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           stop_c: begin
-            r_c_state <= #1 stop_d;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 1'b0;  // keep SDA low
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  stop_d;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  1'b0;  // keep SDA low
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           stop_d: begin
-            r_c_state <= #1 idle;
-            cmd_ack_o <= #1 1'b1;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 1'b1;  // set SDA high
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  idle;
+            cmd_ack_o <=  1'b1;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  1'b1;  // set SDA high
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           rd_a: begin
-            r_c_state <= #1 rd_b;
-            scl_dir_o <= #1 1'b0;  // keep SCL low
-            sda_dir_o <= #1 1'b1;  // tri-state SDA
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  rd_b;
+            scl_dir_o <=  1'b0;  // keep SCL low
+            sda_dir_o <=  1'b1;  // tri-state SDA
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           rd_b: begin
-            r_c_state <= #1 rd_c;
-            scl_dir_o <= #1 1'b1;  // set SCL high
-            sda_dir_o <= #1 1'b1;  // keep SDA tri-stated
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  rd_c;
+            scl_dir_o <=  1'b1;  // set SCL high
+            sda_dir_o <=  1'b1;  // keep SDA tri-stated
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           rd_c: begin
-            r_c_state <= #1 rd_d;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 1'b1;  // keep SDA tri-stated
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  rd_d;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  1'b1;  // keep SDA tri-stated
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           rd_d: begin
-            r_c_state <= #1 idle;
-            cmd_ack_o <= #1 1'b1;
-            scl_dir_o <= #1 1'b0;  // set SCL low
-            sda_dir_o <= #1 1'b1;  // keep SDA tri-stated
-            r_sda_chk <= #1 1'b0;  // don't check SDA output
+            r_c_state <=  idle;
+            cmd_ack_o <=  1'b1;
+            scl_dir_o <=  1'b0;  // set SCL low
+            sda_dir_o <=  1'b1;  // keep SDA tri-stated
+            r_sda_chk <=  1'b0;  // don't check SDA output
           end
 
           wr_a: begin
-            r_c_state <= #1 wr_b;
-            scl_dir_o <= #1 1'b0;  // keep SCL low
-            sda_dir_o <= #1 dat_i;  // set SDA
-            r_sda_chk <= #1 1'b0;  // don't check SDA output (SCL low)
+            r_c_state <=  wr_b;
+            scl_dir_o <=  1'b0;  // keep SCL low
+            sda_dir_o <=  dat_i;  // set SDA
+            r_sda_chk <=  1'b0;  // don't check SDA output (SCL low)
           end
 
           wr_b: begin
-            r_c_state <= #1 wr_c;
-            scl_dir_o <= #1 1'b1;  // set SCL high
-            sda_dir_o <= #1 dat_i;  // keep SDA
-            r_sda_chk <= #1 1'b0;  // don't check SDA output yet
+            r_c_state <=  wr_c;
+            scl_dir_o <=  1'b1;  // set SCL high
+            sda_dir_o <=  dat_i;  // keep SDA
+            r_sda_chk <=  1'b0;  // don't check SDA output yet
             // allow some time for SDA and SCL to settle
           end
 
           wr_c: begin
-            r_c_state <= #1 wr_d;
-            scl_dir_o <= #1 1'b1;  // keep SCL high
-            sda_dir_o <= #1 dat_i;
-            r_sda_chk <= #1 1'b1;  // check SDA output
+            r_c_state <=  wr_d;
+            scl_dir_o <=  1'b1;  // keep SCL high
+            sda_dir_o <=  dat_i;
+            r_sda_chk <=  1'b1;  // check SDA output
           end
 
           wr_d: begin
-            r_c_state <= #1 idle;
-            cmd_ack_o <= #1 1'b1;
-            scl_dir_o <= #1 1'b0;  // set SCL low
-            sda_dir_o <= #1 dat_i;
-            r_sda_chk <= #1 1'b0;  // don't check SDA output (SCL low)
+            r_c_state <=  idle;
+            cmd_ack_o <=  1'b1;
+            scl_dir_o <=  1'b0;  // set SCL low
+            sda_dir_o <=  dat_i;
+            r_sda_chk <=  1'b0;  // don't check SDA output (SCL low)
           end
 
         endcase
@@ -626,128 +626,128 @@ module i2c_master_byte_ctrl (
 
   // generate shift register
   always @(posedge clk_i or negedge rst_n_i)
-    if (!rst_n_i) sr <= #1 8'h0;
-    else if (ld) sr <= #1 dat_i;
-    else if (shift) sr <= #1{sr[6:0], core_rxd};  // tx and rx use one shift register
+    if (!rst_n_i) sr <=  8'h0;
+    else if (ld) sr <=  dat_i;
+    else if (shift) sr <= {sr[6:0], core_rxd};  // tx and rx use one shift register
 
   // generate counter
   always @(posedge clk_i or negedge rst_n_i)
-    if (!rst_n_i) dcnt <= #1 3'h0;
-    else if (ld) dcnt <= #1 3'h7;
-    else if (shift) dcnt <= #1 dcnt - 3'h1;
+    if (!rst_n_i) dcnt <=  3'h0;
+    else if (ld) dcnt <=  3'h7;
+    else if (shift) dcnt <=  dcnt - 3'h1;
 
   assign cnt_done = ~(|dcnt);
 
   reg [4:0] c_state;
   always @(posedge clk_i or negedge rst_n_i)
     if (!rst_n_i) begin
-      core_cmd  <= #1 `I2C_CMD_NOP;
-      core_txd  <= #1 1'b0;
-      shift     <= #1 1'b0;
-      ld        <= #1 1'b0;
-      cmd_ack_o <= #1 1'b0;
-      c_state   <= #1 ST_IDLE;
-      ack_o     <= #1 1'b0;
+      core_cmd  <=  `I2C_CMD_NOP;
+      core_txd  <=  1'b0;
+      shift     <=  1'b0;
+      ld        <=  1'b0;
+      cmd_ack_o <=  1'b0;
+      c_state   <=  ST_IDLE;
+      ack_o     <=  1'b0;
     end else if (i2c_al_o) begin
-      core_cmd  <= #1 `I2C_CMD_NOP;
-      core_txd  <= #1 1'b0;
-      shift     <= #1 1'b0;
-      ld        <= #1 1'b0;
-      cmd_ack_o <= #1 1'b0;
-      c_state   <= #1 ST_IDLE;
-      ack_o     <= #1 1'b0;
+      core_cmd  <=  `I2C_CMD_NOP;
+      core_txd  <=  1'b0;
+      shift     <=  1'b0;
+      ld        <=  1'b0;
+      cmd_ack_o <=  1'b0;
+      c_state   <=  ST_IDLE;
+      ack_o     <=  1'b0;
     end else begin
       // initially reset all signals
-      core_txd  <= #1 sr[7];
-      shift     <= #1 1'b0;
-      ld        <= #1 1'b0;
-      cmd_ack_o <= #1 1'b0;
+      core_txd  <=  sr[7];
+      shift     <=  1'b0;
+      ld        <=  1'b0;
+      cmd_ack_o <=  1'b0;
 
       case (c_state)  // synopsys full_case parallel_case
         ST_IDLE:
         if (go) begin
           if (start_i) begin
-            c_state  <= #1 ST_START;
-            core_cmd <= #1 `I2C_CMD_START;
+            c_state  <=  ST_START;
+            core_cmd <=  `I2C_CMD_START;
           end else if (read_i) begin
-            c_state  <= #1 ST_READ;
-            core_cmd <= #1 `I2C_CMD_READ;
+            c_state  <=  ST_READ;
+            core_cmd <=  `I2C_CMD_READ;
           end else if (write_i) begin
-            c_state  <= #1 ST_WRITE;
-            core_cmd <= #1 `I2C_CMD_WRITE;
+            c_state  <=  ST_WRITE;
+            core_cmd <=  `I2C_CMD_WRITE;
           end else  // stop_i
           begin
-            c_state  <= #1 ST_STOP;
-            core_cmd <= #1 `I2C_CMD_STOP;
+            c_state  <=  ST_STOP;
+            core_cmd <=  `I2C_CMD_STOP;
           end
 
-          ld <= #1 1'b1;
+          ld <=  1'b1;
         end
 
         ST_START:
         if (core_ack) begin
           if (read_i) begin
-            c_state  <= #1 ST_READ;
-            core_cmd <= #1 `I2C_CMD_READ;
+            c_state  <=  ST_READ;
+            core_cmd <=  `I2C_CMD_READ;
           end else begin
-            c_state  <= #1 ST_WRITE;
-            core_cmd <= #1 `I2C_CMD_WRITE;
+            c_state  <=  ST_WRITE;
+            core_cmd <=  `I2C_CMD_WRITE;
           end
 
-          ld <= #1 1'b1;
+          ld <=  1'b1;
         end
 
         ST_WRITE:
         if (core_ack)
           if (cnt_done) begin
-            c_state  <= #1 ST_ACK;
-            core_cmd <= #1 `I2C_CMD_READ;  // NOTE: read the ack
+            c_state  <=  ST_ACK;
+            core_cmd <=  `I2C_CMD_READ;  // NOTE: read the ack
           end else begin
-            c_state  <= #1 ST_WRITE;  // stay in same state
-            core_cmd <= #1 `I2C_CMD_WRITE;  // write_i next bit
-            shift    <= #1 1'b1;
+            c_state  <=  ST_WRITE;  // stay in same state
+            core_cmd <=  `I2C_CMD_WRITE;  // write_i next bit
+            shift    <=  1'b1;
           end
 
         ST_READ:
         if (core_ack) begin
           if (cnt_done) begin
-            c_state  <= #1 ST_ACK;
-            core_cmd <= #1 `I2C_CMD_WRITE;  // NOTE: write the ack
+            c_state  <=  ST_ACK;
+            core_cmd <=  `I2C_CMD_WRITE;  // NOTE: write the ack
           end else begin
-            c_state  <= #1 ST_READ;  // stay in same state
-            core_cmd <= #1 `I2C_CMD_READ;  // read_i next bit
+            c_state  <=  ST_READ;  // stay in same state
+            core_cmd <=  `I2C_CMD_READ;  // read_i next bit
           end
 
-          shift    <= #1 1'b1;
-          core_txd <= #1 ack_i;
+          shift    <=  1'b1;
+          core_txd <=  ack_i;
         end
 
         ST_ACK:
         if (core_ack) begin
           if (stop_i) begin
-            c_state  <= #1 ST_STOP;
-            core_cmd <= #1 `I2C_CMD_STOP;
+            c_state  <=  ST_STOP;
+            core_cmd <=  `I2C_CMD_STOP;
           end else begin
-            c_state   <= #1 ST_IDLE;
-            core_cmd  <= #1 `I2C_CMD_NOP;
+            c_state   <=  ST_IDLE;
+            core_cmd  <=  `I2C_CMD_NOP;
 
             // generate command acknowledge signal
-            cmd_ack_o <= #1 1'b1;
+            cmd_ack_o <=  1'b1;
           end
 
           // assign ack_o output to bit_controller_rxd (contains last received bit)
-          ack_o    <= #1 core_rxd;
+          ack_o    <=  core_rxd;
 
-          core_txd <= #1 1'b1;
-        end else core_txd <= #1 ack_i;
+          core_txd <=  1'b1;
+        end else core_txd <=  ack_i;
 
         ST_STOP:
         if (core_ack) begin
-          c_state   <= #1 ST_IDLE;
-          core_cmd  <= #1 `I2C_CMD_NOP;
+          c_state   <=  ST_IDLE;
+          core_cmd  <=  `I2C_CMD_NOP;
 
           // generate command acknowledge signal
-          cmd_ack_o <= #1 1'b1;
+          cmd_ack_o <=  1'b1;
         end
 
       endcase
