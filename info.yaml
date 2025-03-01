@@ -21,6 +21,8 @@ project:
     - "simpleuart.v"
     - "counter_timer.v"
     - "register.v"
+    - "edge_det.v"
+    - "fifo.v"
     - "ps2.v"
     - "i2c.v"
     - "psram_core.v"
