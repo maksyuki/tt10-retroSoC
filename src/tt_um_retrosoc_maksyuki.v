@@ -21,6 +21,12 @@ module tt_um_retrosoc_maksyuki (
   wire [15:0] s_gpio_outenb_o;
   wire        s_uart_tx_o;
   wire        s_uart_rx_i;
+  wire        s_cust_i2c_scl_i;
+  wire        s_cust_i2c_scl_o;
+  wire        s_cust_i2c_scl_dir_o;
+  wire        s_cust_i2c_sda_i;
+  wire        s_cust_i2c_sda_o;
+  wire        s_cust_i2c_sda_dir_o;
   wire        s_cust_qspi_spi_clk_o;
   wire [ 3:0] s_cust_qspi_spi_csn_o;
   wire [ 3:0] s_cust_qspi_spi_sdo_o;
@@ -43,7 +49,7 @@ module tt_um_retrosoc_maksyuki (
   wire        s_cust_spfs_miso_i;
 
   // gpio setting
-  assign s_gpio_in_i[15:9]          = 7'd0;
+  assign s_gpio_in_i[15:7]          = 9'd0;
   assign s_cust_qspi_spi_sdi_i[3:1] = 3'd0;
   // in
   assign s_uart_rx_i                = ui_in[0];
@@ -64,14 +70,16 @@ module tt_um_retrosoc_maksyuki (
   assign uo_out[6]                  = s_cust_psram_sclk_o;
   assign uo_out[7]                  = s_cust_psram_ce_o;
   // inout
+
+
   assign s_cust_psram_sio0_i        = uio_in[0];
   assign s_cust_psram_sio1_i        = uio_in[1];
   assign s_cust_psram_sio2_i        = uio_in[2];
   assign s_cust_psram_sio3_i        = uio_in[3];
   assign s_cust_qspi_spi_sdi_i[0]   = uio_in[4];
   assign s_gpio_in_i[0]             = uio_in[5];
-  assign s_gpio_in_i[7]             = uio_in[6];
-  assign s_gpio_in_i[8]             = uio_in[7];
+  assign s_cust_i2c_scl_i           = uio_in[6];
+  assign s_cust_i2c_sda_i           = uio_in[7];
 
   assign uio_out[0]                 = s_cust_psram_sio0_o;
   assign uio_out[1]                 = s_cust_psram_sio1_o;
@@ -79,8 +87,8 @@ module tt_um_retrosoc_maksyuki (
   assign uio_out[3]                 = s_cust_psram_sio3_o;
   assign uio_out[4]                 = s_cust_qspi_spi_sdo_o[0];
   assign uio_out[5]                 = s_gpio_out_o[0];
-  assign uio_out[6]                 = s_gpio_out_o[7];
-  assign uio_out[7]                 = s_gpio_out_o[8];
+  assign uio_out[6]                 = s_cust_i2c_scl_o;
+  assign uio_out[7]                 = s_cust_i2c_sda_o;
 
 
   assign uio_oe[0]                  = ~s_cust_psram_sio_oe_o;
@@ -89,8 +97,8 @@ module tt_um_retrosoc_maksyuki (
   assign uio_oe[3]                  = ~s_cust_psram_sio_oe_o;
   assign uio_oe[4]                  = s_cust_qspi_spi_oe_o[0];
   assign uio_oe[5]                  = ~s_gpio_outenb_o[0];
-  assign uio_oe[6]                  = ~s_gpio_outenb_o[7];
-  assign uio_oe[7]                  = ~s_gpio_outenb_o[8];
+  assign uio_oe[6]                  = ~s_cust_i2c_scl_dir_o;
+  assign uio_oe[7]                  = ~s_cust_i2c_sda_dir_o;
 
 
   retrosoc_tiny u_retrosoc_tiny (
@@ -114,6 +122,12 @@ module tt_um_retrosoc_maksyuki (
       .spi_slv_ro_mask_rev_i    (4'd0),
       .uart_tx_o                (s_uart_tx_o),
       .uart_rx_i                (s_uart_rx_i),
+      .cust_i2c_scl_i           (s_cust_i2c_scl_i),
+      .cust_i2c_scl_o           (s_cust_i2c_scl_o),
+      .cust_i2c_scl_dir_o       (s_cust_i2c_scl_dir_o),
+      .cust_i2c_sda_i           (s_cust_i2c_sda_i),
+      .cust_i2c_sda_o           (s_cust_i2c_sda_o),
+      .cust_i2c_sda_dir_o       (s_cust_i2c_sda_dir_o),
       .cust_qspi_spi_clk_o      (s_cust_qspi_spi_clk_o),
       .cust_qspi_spi_csn_o      (s_cust_qspi_spi_csn_o),
       .cust_qspi_spi_sdo_o      (s_cust_qspi_spi_sdo_o),
