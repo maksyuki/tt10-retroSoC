@@ -21,7 +21,7 @@ project:
     - "simpleuart.v"
     - "counter_timer.v"
     - "register.v"
-    - "archinfo"
+    - "archinfo.v"
     - "lfsr.v"
     - "rng.v"
     - "cdc_sync.v"

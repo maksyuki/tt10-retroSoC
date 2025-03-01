@@ -284,6 +284,13 @@ module retrosoc_tiny #(
   wire [31:0] s_tim0_reg_cfg_dout;
   wire [31:0] s_tim0_reg_val_dout;
   wire [31:0] s_tim0_reg_dat_dout;
+  // tim1
+  wire        s_tim1_reg_cfg_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0068);
+  wire        s_tim1_reg_val_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_006c);
+  wire        s_tim1_reg_dat_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0070);
+  wire [31:0] s_tim1_reg_cfg_dout;
+  wire [31:0] s_tim1_reg_val_dout;
+  wire [31:0] s_tim1_reg_dat_dout;
   // psram
   wire        s_psram_cfg_wait_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0080);
   wire        s_psram_cfg_chd_sel = s_iomem_valid && (s_iomem_addr == 32'h0300_0084);
@@ -321,6 +328,21 @@ module retrosoc_tiny #(
       .reg_dat_di(s_iomem_wdata),
       .reg_dat_do(s_tim0_reg_dat_dout),
       .irq_out   (s_irq_tim0)
+  );
+
+  counter_timer u_counter_timer1 (
+      .resetn    (rst_n_i),
+      .clkin     (clk_i),
+      .reg_val_we(s_tim1_reg_val_sel ? s_iomem_wstrb[3:0] : 4'h0),
+      .reg_val_di(s_iomem_wdata),
+      .reg_val_do(s_tim1_reg_val_dout),
+      .reg_cfg_we(s_tim1_reg_cfg_sel ? s_iomem_wstrb[0] : 1'b0),
+      .reg_cfg_di(s_iomem_wdata),
+      .reg_cfg_do(s_tim1_reg_cfg_dout),
+      .reg_dat_we(s_tim1_reg_dat_sel ? s_iomem_wstrb[3:0] : 4'h0),
+      .reg_dat_di(s_iomem_wdata),
+      .reg_dat_do(s_tim1_reg_dat_dout),
+      .irq_out   ()
   );
 
   assign s_psram_addr  = s_mem_addr;
@@ -483,6 +505,9 @@ module retrosoc_tiny #(
           8'h5c: r_iomem_rdata <= s_tim0_reg_cfg_dout;
           8'h60: r_iomem_rdata <= s_tim0_reg_val_dout;
           8'h64: r_iomem_rdata <= s_tim0_reg_dat_dout;
+          8'h68: r_iomem_rdata <= s_tim1_reg_cfg_dout;
+          8'h6c: r_iomem_rdata <= s_tim1_reg_val_dout;
+          8'h70: r_iomem_rdata <= s_tim1_reg_dat_dout;
           8'h80: begin
             r_iomem_rdata <= {27'd0, s_psram_cfg_wait_dout};
             if (s_iomem_wstrb[0]) r_psram_cfg_wait_din <= s_iomem_wdata[4:0];
